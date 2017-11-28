@@ -4,9 +4,8 @@
   "description": "electronJS-based resin application",
   "main": "main.js",
   "scripts": {
-    "dev": "NODE_ENV=development electron .",
-    "lint": "eslint .",
-    "start": "NODE_ENV=production startx ./node_modules/electron/dist/electron ."
+    "start": "NODE_ENV=production startx ./node_modules/electron/dist/electron .",
+    "test": "NODE_ENV=development startx ./node_modules/electron/dist/electron ."
   },
   "repository": {
     "type": "git",
@@ -19,8 +18,8 @@
     "js"
   ],
   "dependencies": {
-    "electron": "^1.4.15",
-    "electron-rebuild": "^1.5.7"
+    "electron": "^1.4.13",
+    "require-rebuild": "^1.2.8"
   },
   "author": "Carlo Maria Curinga",
   "license": "Apache-2.0",
@@ -31,10 +30,5 @@
   "jshintConfig": {
     "esversion": 6,
     "strict": true
-  },
-  "devDependencies": {
-    "eslint": "^3.14.1",
-    "eslint-config-airbnb-base": "^11.0.1",
-    "eslint-plugin-import": "^2.2.0"
   }
 }
