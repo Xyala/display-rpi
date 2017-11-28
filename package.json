@@ -1,0 +1,22 @@
+{
+  "name": "display-rpi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xyala/display-rpi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xyala/display-rpi/issues"
+  },
+  "homepage": "https://github.com/Xyala/display-rpi#readme",
+  "dependencies": {
+    "autobahn": "^0.11.1",
+    "i2c-bus": "^1.2.2"
+  }
+}
