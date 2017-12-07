@@ -10,4 +10,5 @@ umount /dev/shm && mount -t tmpfs shm /dev/shm
 # it saves you a LOT of resources avoiding full-desktops envs
 
 rm /tmp/.X0-lock &>/dev/null || true
+FRAMEBUFFER=/dev/fb1
 startx /usr/src/app/node_modules/electron/dist/electron /usr/src/app --enable-logging
