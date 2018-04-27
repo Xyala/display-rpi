@@ -1,53 +1,59 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Hello World</title>
-  </head>
-  <body>
-        <h1>Hello, World</h1>
-    		<div>
-    			&nbsp; &nbsp; \</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp;\</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp; \\</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp; &nbsp;\\</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp; &nbsp; &gt;\/7</div>
-    		<div>
-    			&nbsp; &nbsp; _.-(6&#39; &nbsp;\</div>
-    		<div>
-    			&nbsp; &nbsp;(=___._/` \</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp; &nbsp; ) &nbsp;\ |</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp; &nbsp;/ &nbsp; / |</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp; / &nbsp; &nbsp;&gt; /</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp;j &nbsp; &nbsp;&lt; _\</div>
-    		<div>
-    			&nbsp;_.-&#39; : &nbsp; &nbsp; &nbsp;``.</div>
-    		<div>
-    			&nbsp;\ r=._\ &nbsp; &nbsp; &nbsp; &nbsp;`.</div>
-    		<div>
-    			&lt;`\\_ &nbsp;\ &nbsp; &nbsp; &nbsp; &nbsp; .`-.</div>
-    		<div>
-    			&nbsp;\ r-7 &nbsp;`-. ._ &nbsp;&#39; . &nbsp;`\</div>
-    		<div>
-    			&nbsp; \`, &nbsp; &nbsp; &nbsp;`-.`7 &nbsp;7) &nbsp; )</div>
-    		<div>
-    			&nbsp; &nbsp;\/ &nbsp; &nbsp; &nbsp; &nbsp; \| &nbsp;\&#39; &nbsp;/ `-._</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; || &nbsp; &nbsp;.&#39;</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ,.-&#39; &gt;.&#39;</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;.&#39;_.&#39;&#39;</div>
-    		<div>
-    			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;&#39;</div>
+	<head>
+		<script>AUTOBAHN_DEBUG = false;</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/bower_components/autobahnjs/autobahn.min.js"></script>
+		<script src="http://rawgit.com/joewalnes/smoothie/master/smoothie.js"></script>
+		<script>
 
-  </body>
+
+		var connection = new autobahn.Connection({
+			url: 'wss://ingest.epeakgears.com:1337/ws',
+			realm: '3813ef95a069ab1cfd0be781216ff62869311c34'}
+		);
+
+		var temperature = new TimeSeries();
+
+		connection.onopen = function (session) {
+
+			// SUBSCRIBE to a topic and receive events
+			//
+			function telemetry (args) {
+				var msg = args[0];
+				try {
+					var results = JSON.parse(msg); // can use this object to do stuff
+					$("#temperature").text(results.readings.reading+ '°C');
+					$("#coldpoint").text(results.readings.coldpoint+ '°C');
+					temperature.append(new Date().getTime(), results.readings.reading);
+					console.log("event for 'telemetry.yun1' received: " + msg);
+				} catch(e) {
+				}
+			}
+			session.subscribe('com.octv.telemetry.yun1', telemetry).then(
+				function (sub) {
+					console.log("subscribed to topic 'telemetry.yun1'");
+				},
+				function (err) {
+					console.log("failed to subscribed: " + err);
+				}
+			);
+		};
+
+		connection.open();
+
+		 function createTimeline() {
+			 var chart = new SmoothieChart();
+			 chart.addTimeSeries(temperature, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+			 chart.streamTo(document.getElementById("chart"), 500);
+		 }
+		</script>
+	</head>
+	<body onload="createTimeline()">
+		<h1>Arduino Yun Serial to WAMP Bridge Test</h1>
+
+		<div>Temperature: <span id="temperature"></span></div>
+		<div>Coldpoint: <span id="coldpoint"></span></div>
+		<canvas id="chart" width="400" height="100" style="border: 1px black solid;"></canvas>
+	</body>
 </html>
